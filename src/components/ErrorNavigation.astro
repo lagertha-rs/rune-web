@@ -1,0 +1,95 @@
+---
+import { getCollection } from "astro:content";
+
+const allDocs = await getCollection("docs");
+const errorPages = allDocs.filter(doc => doc.id.startsWith("errors/") && !doc.id.endsWith("index"));
+const errors = errorPages.filter(d => d.id.match(/\/e\d{4}$/i));
+const warnings = errorPages.filter(d => d.id.match(/\/w\d{4}$/i));
+const jvms = errorPages.filter(d => d.id.match(/\/jvms\d{4}$/i));
+
+function sortBySlug(a, b) { return a.id.localeCompare(b.id); }
+errors.sort(sortBySlug);
+warnings.sort(sortBySlug);
+jvms.sort(sortBySlug);
+---
+
+<div class="error-nav">
+  <p><strong>Error Reference</strong> · <a href="/errors/">View all</a></p>
+  <div class="error-nav-categories">
+    <div>
+      <strong>Errors (E)</strong>
+      <ul>
+        {errors.slice(0, 5).map(doc => {
+          const code = doc.id.split('/')[1].toUpperCase();
+          return <li><a href={`/errors/${code.toLowerCase()}/`}>{code}</a></li>;
+        })}
+        {errors.length > 5 && <li>…and {errors.length - 5} more</li>}
+      </ul>
+    </div>
+    <div>
+      <strong>Warnings (W)</strong>
+      <ul>
+        {warnings.slice(0, 5).map(doc => {
+          const code = doc.id.split('/')[1].toUpperCase();
+          return <li><a href={`/errors/${code.toLowerCase()}/`}>{code}</a></li>;
+        })}
+        {warnings.length > 5 && <li>…and {warnings.length - 5} more</li>}
+      </ul>
+    </div>
+    <div>
+      <strong>JVMS (JVMS)</strong>
+      <ul>
+        {jvms.slice(0, 5).map(doc => {
+          const code = doc.id.split('/')[1].toUpperCase();
+          return <li><a href={`/errors/${code.toLowerCase()}/`}>{code}</a></li>;
+        })}
+        {jvms.length > 5 && <li>…and {jvms.length - 5} more</li>}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .error-nav {
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .error-nav p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  .error-nav-categories {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .error-nav-categories > div {
+    flex: 1;
+    min-width: 150px;
+  }
+  .error-nav-categories ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  .error-nav-categories li {
+    margin-bottom: 0.25rem;
+  }
+  .error-nav-categories a {
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .error-nav-categories a:hover {
+    color: var(--sl-color-blue-5);
+  }
+  @media (max-width: 768px) {
+    .error-nav-categories {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+</style>

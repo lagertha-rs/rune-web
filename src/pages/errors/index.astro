@@ -1,0 +1,259 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection } from "astro:content";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+
+const allDocs = await getCollection("docs");
+const errorPages = allDocs.filter(
+  (doc) => doc.id.startsWith("errors/") && doc.id !== "errors/index",
+);
+
+const errors = errorPages.filter((d) => d.id.match(/\/e\d{4}$/i));
+const warnings = errorPages.filter((d) => d.id.match(/\/w\d{4}$/i));
+const jvms = errorPages.filter((d) => d.id.match(/\/jvms\d{4}$/i));
+
+function sortBySlug(a, b) {
+  return a.id.localeCompare(b.id);
+}
+errors.sort(sortBySlug);
+warnings.sort(sortBySlug);
+jvms.sort(sortBySlug);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title={`Error Reference | ${SITE_TITLE}`}
+      description={SITE_DESCRIPTION}
+    />
+    <style>
+      main {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      h1 {
+        margin-bottom: 0.5rem;
+      }
+      .subtitle {
+        font-size: 1.2rem;
+        color: var(--sl-color-gray-6);
+        margin-bottom: 2rem;
+      }
+      .category {
+        margin: 4rem 0 2rem;
+        padding: 1.5rem;
+        background: var(--sl-color-gray-1);
+        border-radius: 8px;
+        border-left: 5px solid var(--sl-color-gray-5);
+        border-bottom: none;
+      }
+      .category ~ .category {
+        border-top: 4px solid var(--sl-color-gray-8);
+        padding-top: 2.5rem;
+        margin-top: 4rem;
+      }
+      .error-list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+      }
+      .error-list li {
+        background: var(--sl-color-gray-1);
+        border: 4px solid var(--sl-color-gray-7);
+        border-radius: 8px;
+        padding: 1.25rem;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        position: relative;
+        overflow: hidden;
+      }
+      .error-list li::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--sl-color-gray-4);
+      }
+      .error-list li:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+        border-color: var(--sl-color-blue-5);
+      }
+      .error-list a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+
+      .error-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .error-description {
+        font-size: 0.95rem;
+        color: var(--sl-color-gray-7);
+        line-height: 1.4;
+      }
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: var(--sl-color-gray-6);
+      }
+
+      .empty-category-notice {
+        background: var(--sl-color-gray-1);
+        border: 1px dashed var(--sl-color-gray-4);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        color: var(--sl-color-gray-6);
+        margin: 1rem 0;
+      }
+      @media (max-width: 768px) {
+        .error-list {
+          grid-template-columns: 1fr;
+        }
+        main {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <h1>Error Reference</h1>
+      <p class="subtitle">
+        Complete reference of Rune assembler errors, warnings, and JVM
+        specification warnings. Each error page includes a detailed explanation,
+        example, and solution. When an error occurs during assembly, the
+        assembler will link directly to the relevant error page to help you
+        understand and fix the issue.
+      </p>
+
+      <hr />
+
+      <div class="category">
+        <h2>Assembly Errors (E)</h2>
+        <p>
+          Fatal errors that prevent successful assembly. These indicate syntax
+          errors, semantic issues, or invalid bytecode.
+        </p>
+      </div>
+      {
+        errors.length === 0 ? (
+          <div class="empty-category-notice">
+            <p>
+              No assembly error pages have been added yet. Error pages will
+              appear here as they are documented.
+            </p>
+          </div>
+        ) : (
+          <ul class="error-list">
+            {errors.map((doc) => {
+              const code = doc.id.split("/")[1].toUpperCase();
+              return (
+                <li>
+                  <a href={`/errors/${code.toLowerCase()}/`}>
+                    <div class="error-title">{doc.data.title}</div>
+                    <div class="error-description">{doc.data.description}</div>
+                    <div class="meta">
+                      <span>View details →</span>
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
+
+      <hr />
+
+      <div class="category">
+        <h2>Assembly Warnings (W)</h2>
+        <p>
+          Non-fatal warnings about potential issues, deprecated features, or
+          suggestions for improvement.
+        </p>
+      </div>
+      {
+        warnings.length === 0 ? (
+          <div class="empty-category-notice">
+            <p>
+              No assembly warning pages have been added yet. Warning pages will
+              appear here as they are documented.
+            </p>
+          </div>
+        ) : (
+          <ul class="error-list">
+            {warnings.map((doc) => {
+              const code = doc.id.split("/")[1].toUpperCase();
+              return (
+                <li>
+                  <a href={`/errors/${code.toLowerCase()}/`}>
+                    <div class="error-title">{doc.data.title}</div>
+                    <div class="error-description">{doc.data.description}</div>
+                    <div class="meta">
+                      <span>View details →</span>
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
+
+      <hr />
+
+      <div class="category">
+        <h2>JVM Specification Warnings (JVMS)</h2>
+        <p>
+          Warnings about violations of the Java Virtual Machine Specification
+          that may cause portability or compatibility issues.
+        </p>
+      </div>
+      {
+        jvms.length === 0 ? (
+          <div class="empty-category-notice">
+            <p>
+              No JVM specification warning pages have been added yet. JVMS pages
+              will appear here as they are documented.
+            </p>
+          </div>
+        ) : (
+          <ul class="error-list">
+            {jvms.map((doc) => {
+              const code = doc.id.split("/")[1].toUpperCase();
+              return (
+                <li>
+                  <a href={`/errors/${code.toLowerCase()}/`}>
+                    <div class="error-title">{doc.data.title}</div>
+                    <div class="error-description">{doc.data.description}</div>
+                    <div class="meta">
+                      <span>View details →</span>
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
+    </main>
+    <Footer />
+  </body>
+</html>
