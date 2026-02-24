@@ -10,9 +10,9 @@ const errorPages = allDocs.filter(
   (doc) => doc.id.startsWith("errors/") && doc.id !== "errors/index",
 );
 
-const errors = errorPages.filter((d) => d.id.match(/\/e\d{4}$/i));
-const warnings = errorPages.filter((d) => d.id.match(/\/w\d{4}$/i));
-const jvms = errorPages.filter((d) => d.id.match(/\/jvms\d{4}$/i));
+const errors = errorPages.filter((d) => d.id.match(/\/e\d{3}$/i));
+const warnings = errorPages.filter((d) => d.id.match(/\/w\d{3}$/i));
+const jvms = errorPages.filter((d) => d.id.match(/\/jvms\d{3}$/i));
 
 function sortBySlug(a, b) {
   return a.id.localeCompare(b.id);
