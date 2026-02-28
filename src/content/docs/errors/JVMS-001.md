@@ -1,7 +1,7 @@
 ---
-title: "JVMS001: Interface Flags Combination Violation"
+title: "JVMS-001: Interface Flags Combination Violation"
 description: "Identifies illegal combinations of class access flags when defining a Java interface."
-error_code: "JVMS001"
+error_code: "JVMS-001"
 severity: "jvm_spec"
 ---
 
