@@ -16,6 +16,7 @@ export default defineConfig({
 		starlight({
 			title: "runestaff",
 			description: "Java-assembly language for Lagertha VM",
+			customCss: ["./src/styles/starlight.css"],
 			plugins: [
 				catppuccin({
 					dark: { flavor: "macchiato", accent: "sky" },
@@ -37,6 +38,16 @@ export default defineConfig({
 				{ label: "Home", link: "/" },
 				{ label: "Updates", link: "/blog/" },
 				{ label: "Documentation", link: "/docs/" },
+				{
+					label: "Syntax Reference",
+					collapsed: false,
+					items: [
+						{ label: "Overview", link: "/syntax/" },
+						{ label: "Runestaff Types", link: "/syntax/rns-types/" },
+						{ label: "Directives", link: "/syntax/directives/" },
+						{ label: "Instructions", link: "/syntax/instructions/" },
+					],
+				},
 				{ label: "Error Reference", link: "/errors/" },
 			],
 			head: [
