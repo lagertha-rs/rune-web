@@ -1,0 +1,61 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import UnderConstructionNotice from "../../components/UnderConstructionNotice.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Documentation | ${SITE_TITLE}`}
+			description={SITE_DESCRIPTION}
+		/>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Documentation</h1>
+
+			<UnderConstructionNotice />
+
+			<p>
+				Welcome to the Runestaff documentation. This site provides
+				reference material for the Runestaff Java-assembly language and
+				its error codes.
+			</p>
+
+			<div class="links">
+				<h2>📚 Sections</h2>
+				<ul>
+					<li>
+						<a href="/syntax/">Syntax Reference</a> – Language
+						syntax: directives, instructions, operands, and type
+						descriptors
+					</li>
+					<li>
+						<a href="/errors/">Error Reference</a> – Complete list of
+						assembler errors and warnings with examples and solutions
+					</li>
+				</ul>
+			</div>
+
+			<div class="notice">
+				<h2>🔗 Linking from the Assembler</h2>
+				<p>
+					When the Runestaff assembler encounters an error, it will
+					provide a direct link to the relevant error page. Error
+					pages are accessible at URLs like:
+				</p>
+				<pre><code>https://rune.lagertha-vm.com/errors/E-000/</code></pre>
+				<p>
+					You can browse all errors at <a href="/errors/">/errors/</a
+					>.
+				</p>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
